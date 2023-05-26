@@ -32,7 +32,7 @@ Bitsprayer::Bitsprayer(int states, double prob) {
 
 //    transitions = {{}};
 //    responses = {{{}}};
-    if (VERBOSEBIT) cout << "Bitsprayer Made w " << states << " states" << endl;
+    if (VERBOSEBIT) cout << "Bitsprayer Made w " << states << " sdaStates" << endl;
 }
 
 Bitsprayer::Bitsprayer(Bitsprayer &other) {
@@ -131,10 +131,10 @@ int Bitsprayer::print(ostream &aus) {
         }
     }
     if (transitions.size() > numStates) {
-        aus << "ERROR!  More transitions than the number of states!" << endl;
+        aus << "ERROR!  More transitions than the number of sdaStates!" << endl;
     }
     if (responses.size() > numStates) {
-        aus << "ERROR!  More responses than the number of states!" << endl;
+        aus << "ERROR!  More responses than the number of sdaStates!" << endl;
     }
     if (VERBOSEBIT) cout << "Bitsprayer Printed" << endl;
     return 0;

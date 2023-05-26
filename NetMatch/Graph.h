@@ -14,12 +14,13 @@ public:
     Graph();
     explicit Graph(int nn);
 
-    int fill(string fname);
+    vector<int> fill(string fname);
     int fill(vector<int> &weights, bool diag);
     vector<int> SIR(double alpha, int p0);
     void print(ostream &out);
     vector<int> weightHist();
-    int hammy_distance(Graph &other);
+    int hammy_distance(Graph &other, int penalty);
+    static int quadForm(int A, int B, int C);
 
 protected:
     static int infect(int nin, double alpha);

@@ -1,5 +1,4 @@
 #include "Graph.h"
-#include "../BitSprayer/Bitsprayer.h"
 
 Graph::Graph() {
     numNodes = 0;
@@ -19,7 +18,13 @@ Graph::Graph(int nn) {
     }
 }
 
-int Graph::fill(const string fname) {
+int Graph::quadForm(int A, int B, int C) {
+    return ((-1) * B + (int) sqrt(B * B - 4 * A * C)) / (2 * A);
+}
+
+vector<int> Graph::fill(const string fname) {
+    vector<int> vals;
+
     numNodes = 0;
     numEdges = 0;
     totWeight = 0;
@@ -42,18 +47,43 @@ int Graph::fill(const string fname) {
 
         int to;
         while (ss >> to) {
-            if (from < to) {
-                if (adjM[from][to] == 0) {
-                    numEdges++;
-                }
-                adjM[from][to]++;
-                adjM[to][from]++;
-                totWeight++;
+            if (adjM[from][to] == 0) {
+                numEdges++;
             }
+            adjM[from][to]++;
+//            adjM[to][from]++;
+            totWeight++;
         }
         from++;
     }
-    return 0;
+
+    int val1, val2;
+    for (int row = 0; row < numNodes; ++row) {
+        for (int col = row + 1; col < numNodes; ++col) {
+            val1 = adjM[row][col];
+            val2 = adjM[col][row];
+            if (val1 != val2) {
+                totWeight += abs(val1 - val2);
+                adjM[row][col] = max(val1, val2);
+                adjM[col][row] = max(val1, val2);
+            }
+        }
+    }
+
+    vals.reserve(numNodes * (numNodes - 1) / 2);
+    int col;
+    int idx = 0;
+    for (int iter = 1; iter < numNodes; ++iter) {
+        for (int row = 0; row < numNodes - iter; ++row) {
+            col = row + iter;
+            vals.push_back(adjM[row][col]);
+            idx++;
+        }
+    }
+    if (idx != numNodes * (numNodes - 1) / 2) {
+        cout << "ERROR!!! Made weight list from graph wrong" << endl;
+    }
+    return vals;
 }
 
 void Graph::print(ostream &out) {
@@ -91,10 +121,6 @@ vector<int> Graph::weightHist() {
         }
     }
     return rtn;
-}
-
-int quadForm(int A, int B, int C) {
-    return ((-1) * B + (int) sqrt(B * B - 4 * A * C)) / (2 * A);
 }
 
 int Graph::fill(vector<int> &weights, bool diag) {
@@ -203,25 +229,27 @@ vector<int> Graph::SIR(double alpha, int p0) {
     return profile;
 }
 
-int Graph::hammy_distance(Graph &other){
+int Graph::hammy_distance(Graph &other, int penalty) {
     int cost = 0;
     for (int row = 0; row < other.numNodes; ++row) {
-        for (int col = row+1; col < other.numNodes; ++col) {
+        for (int col = row + 1; col < other.numNodes; ++col) {
             int curCount = adjM[row][col];
             int dubCount = other.adjM[row][col];
-            if (curCount!=dubCount){
-                if (dubCount == 0){
-                    cost += 5;
-                } else if (curCount == 0){
-                    cost += 5;
-                } else{
-                    cost += abs(curCount-dubCount);
+            if (curCount != dubCount) {
+                if (dubCount == 0) {
+                    cost += penalty;
+                } else if (curCount == 0) {
+                    cost += penalty;
+                } else {
+                    cost += min(abs(curCount - dubCount), penalty);
                 }
             }
         }
     }
     return cost;
 }
+
+
 
 //int main(){
 //    Bitsprayer b;

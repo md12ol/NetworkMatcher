@@ -15,7 +15,7 @@ using namespace std;
 class Bitsprayer {
 public:
     Bitsprayer();           //creates an unallocated bitspray
-    explicit Bitsprayer(int states, double prob);      //create a bitspray with buffer S states
+    explicit Bitsprayer(int states, double prob);      //create a bitspray with buffer S sdaStates
     Bitsprayer(Bitsprayer &other);  //copy constructor
     ~Bitsprayer();                //destructor
 
